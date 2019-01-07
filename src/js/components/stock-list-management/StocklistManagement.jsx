@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import ReactTable from 'react-table';
 import update from 'immutability-helper';
+import { getTranslate, Translate } from 'react-localize-redux';
 
 import 'react-table/react-table.css';
 
@@ -193,7 +194,7 @@ class StocklistManagement extends Component {
                 <button
                   className="btn btn-outline-primary btn-xs"
                   onClick={() => { window.location = `/openboxes/inventoryItem/showStockCard/${this.state.productInfo.id}`; }}
-                >Return to stock card
+                ><Translate id="stockListManagement.returnStockCard.label" />
                 </button>
               </div>
             </div>
@@ -218,40 +219,40 @@ class StocklistManagement extends Component {
           })}
           columns={[
             {
-              Header: 'Location Group Name',
+              Header: <div><span title={this.props.translate('stockListManagement.locationGroup.label')}><Translate id="stockListManagement.locationGroup.label" /></span></div>,
               accessor: 'locationGroup.name',
               className: 'w-space-normal',
             },
             {
-              Header: 'Location Name',
+              Header: <div><span title={this.props.translate('stockListManagement.locationName.label')}><Translate id="stockListManagement.locationName.label" /></span></div>,
               accessor: 'location.name',
               aggregate: () => '',
               className: 'w-space-normal',
             },
             {
-              Header: 'Stocklist Name',
+              Header: <div><span title={this.props.translate('stockListManagement.stockListName.label')}><Translate id="stockListManagement.stockListName.label" /></span></div>,
               accessor: 'name',
               aggregate: () => '',
             },
             {
-              Header: 'Monthly demand',
+              Header: <div><span title={this.props.translate('stockListManagement.monthlyDemand.label')}><Translate id="stockListManagement.monthlyDemand.label" /></span></div>,
               accessor: 'monthlyDemand',
               aggregate: vals => _.sum(vals),
               className: 'text-center',
             },
             {
-              Header: 'Manager',
+              Header: <div><span title={this.props.translate('stockListManagement.manager.label')}><Translate id="stockListManagement.manager.label" /></span></div>,
               accessor: 'manager.name',
               aggregate: () => '',
             },
             {
-              Header: 'Replenishment period',
+              Header: <div><span title={this.props.translate('stockListManagement.replenishmentPeriod.label')}><Translate id="stockListManagement.replenishmentPeriod.label" /></span></div>,
               accessor: 'replenishmentPeriod',
               aggregate: () => '',
               className: 'text-center',
             },
             {
-              Header: 'Maximum  Quantity',
+              Header: <div><span title={this.props.translate('stockListManagement.maximumQty.label')}><Translate id="stockListManagement.maximumQty.label" /></span></div>,
               accessor: 'maxQuantity',
               aggregate: vals => _.sum(vals),
               className: 'text-center',
@@ -276,13 +277,13 @@ class StocklistManagement extends Component {
               },
             },
             {
-              Header: 'Unit of measure',
+              Header: <div><span title={this.props.translate('stockListManagement.unitOfMeasure.label')}><Translate id="stockListManagement.unitOfMeasure.label" /></span></div>,
               accessor: 'uom',
               aggregate: () => '',
               className: 'text-center',
             },
             {
-              Header: 'Actions',
+              Header: <div><span title={this.props.translate('stockListManagement.actions.label')}><Translate id="stockListManagement.actions.label" /></span></div>,
               accessor: 'edit',
               minWidth: 230,
               className: 'text-center',
@@ -299,31 +300,31 @@ class StocklistManagement extends Component {
                       className="btn btn-outline-primary btn-xs mx-1"
                       disabled={original.edit || original.new}
                       onClick={() => this.editItem(index)}
-                    >Edit
+                    ><Translate id="default.button.edit.label" />
                     </button>
                     <button
                       className="btn btn-outline-primary btn-xs mx-1"
                       disabled={(!original.edit && !original.new) || !original.stocklistId
                       || _.isNil(original.maxQuantity) || original.maxQuantity === ''}
                       onClick={() => this.saveItem(index, original)}
-                    >Save
+                    ><Translate id="default.button.save.label" />
                     </button>
                     <button
                       className="btn btn-outline-danger btn-xs mx-1"
                       onClick={() => this.deleteItem(index)}
-                    >Delete
+                    ><Translate id="default.button.delete.label" />
                     </button>
                     <button
                       className="btn btn-outline-secondary btn-xs mx-1"
                       disabled={original.edit || original.new}
                       onClick={() => this.printItem(index)}
-                    >Print
+                    ><Translate id="default.button.print.label" />
                     </button>
                     <button
                       className="btn btn-outline-secondary btn-xs mx-1"
                       disabled={original.edit || original.new}
                       onClick={() => this.mailItem(index)}
-                    >Email
+                    ><Translate id="default.button.email.label" />
                     </button>
                   </div>
                 );
@@ -345,7 +346,7 @@ class StocklistManagement extends Component {
             onClick={() => {
               this.addItem(this.state.selectedStocklist);
             }}
-          >Add Stocklist
+          ><Translate id="stockListManagement.addStockList.label" />
           </button>
         </div>
       </div>
@@ -353,7 +354,11 @@ class StocklistManagement extends Component {
   }
 }
 
-export default connect(null, { showSpinner, hideSpinner })(StocklistManagement);
+const mapStateToProps = state => ({
+  translate: getTranslate(state.localize),
+});
+
+export default connect(mapStateToProps, { showSpinner, hideSpinner })(StocklistManagement);
 
 StocklistManagement.propTypes = {
   /** React router's object which contains information about url varaiables and params */
@@ -364,4 +369,5 @@ StocklistManagement.propTypes = {
   showSpinner: PropTypes.func.isRequired,
   /** Function called when data has loaded */
   hideSpinner: PropTypes.func.isRequired,
+  translate: PropTypes.func.isRequired,
 };
